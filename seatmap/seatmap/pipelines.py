@@ -12,14 +12,15 @@ from itemadapter import ItemAdapter
 
 class SeatmapPipeline:
     def open_spider(self, spider):
-        self.csvfile = open("seatmaps.csv", "w", newline="")
+        self.csvfile = open("seatmaps.csv", "a", newline="")
         self.seatmap_writer = csv.writer(self.csvfile, delimiter=";")
         self.seatmap_writer.writerow(
             [
-                "aircraft_description",
                 "airline_code",
+                "airline_name",
                 "aircraft_code",
                 "layout",
+                "aircraft_description",
                 "seat_map",
                 "traveler_photos",
                 "seat_map_key",
@@ -34,10 +35,11 @@ class SeatmapPipeline:
         line = ItemAdapter(item).asdict()
         self.seatmap_writer.writerow(
             [
-                line["aircraft_description"],
                 line["airline_code"],
+                line["airline_name"],
                 line["aircraft_code"],
                 line["layout"],
+                line["aircraft_description"],
                 line["seat_map"],
                 line["traveler_photos"],
                 line["seat_map_key"],

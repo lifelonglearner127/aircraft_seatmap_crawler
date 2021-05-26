@@ -5,6 +5,7 @@ from scrapy.loader import ItemLoader
 class SeatMapLoader(ItemLoader):
     default_output_processor = TakeFirst()
     airline_code_in = MapCompose(str.strip)
+    airline_name_in = MapCompose(str.strip)
     aircraft_code_in = MapCompose(str.strip)
     layout_in = MapCompose(str.strip)
     overview_in = MapCompose(str.strip)

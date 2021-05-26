@@ -9,10 +9,11 @@ from typing import Optional
 
 @dataclass
 class SeatMap:
-    aircraft_description: Optional[str] = field(default=None)
     airline_code: Optional[str] = field(default=None)
+    airline_name: Optional[str] = field(default=None)
     aircraft_code: Optional[str] = field(default=None)
     layout: Optional[str] = field(default=None)
+    aircraft_description: Optional[str] = field(default=None)
     seat_map: Optional[str] = field(default=None)
     traveler_photos: Optional[str] = field(default=None)
     seat_map_key: Optional[str] = field(default=None)
