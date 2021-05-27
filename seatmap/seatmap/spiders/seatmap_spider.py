@@ -26,7 +26,7 @@ class SeatMapSpider(scrapy.Spider):
     start_urls = ["https://seatguru.com/browseairlines/browseairlines.php"]
 
     def parse(self, response):
-        for airline_detail in response.xpath("//div[@class='browseAirlines']//a"):
+        for airline_detail in response.xpath("//div[@class='browseAirlines']//a")[:2]:
             airline = airline_detail.xpath("./text()").get()
             if AIRLINES_TO_BE_SCRAPED and airline not in AIRLINES_TO_BE_SCRAPED:
                 continue
@@ -37,7 +37,7 @@ class SeatMapSpider(scrapy.Spider):
         airline_name_code = response.xpath("//div[@class='content-header']//h1/text()").get()
         airline_name = airline_name_code[:-4]
         airline_code = airline_name_code[-3:-1]
-        for aircraft_detail_page in response.xpath("//div[@class='aircraft_seats']/a/@href").getall():
+        for aircraft_detail_page in response.xpath("//div[@class='aircraft_seats']/a/@href").getall()[:2]:
             yield response.follow(
                 aircraft_detail_page,
                 callback=self.parse_aircraft,
