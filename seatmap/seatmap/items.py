@@ -18,3 +18,4 @@ class SeatMap:
     traveler_photos: Optional[str] = field(default=None)
     seat_map_key: Optional[str] = field(default=None)
     overview: Optional[str] = field(default=None)
+    seats_file: Optional[str] = field(default=None)

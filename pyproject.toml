@@ -8,6 +8,7 @@ authors = ["Life-Long Learner <life.long.learner127@outlook.com>"]
 python = "^3.8"
 Scrapy = "^2.5.0"
 pandas = "^1.2.4"
+python-slugify = "^5.0.2"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.9.2"

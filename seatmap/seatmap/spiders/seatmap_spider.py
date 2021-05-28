@@ -1,11 +1,16 @@
+import json
 import logging
+import os
+import pathlib
 
 import scrapy
+from slugify import slugify
 
 from seatmap.items import SeatMap
 from seatmap.loaders import SeatMapLoader
 
 logger = logging.getLogger(__name__)
+BASE_PATH = os.path.join(pathlib.Path(__name__).parent.resolve(), "json")
 AIRLINES_TO_BE_SCRAPED = [
     # "United",
     # "Silkair",
@@ -26,7 +31,7 @@ class SeatMapSpider(scrapy.Spider):
     start_urls = ["https://seatguru.com/browseairlines/browseairlines.php"]
 
     def parse(self, response):
-        for airline_detail in response.xpath("//div[@class='browseAirlines']//a")[:2]:
+        for airline_detail in response.xpath("//div[@class='browseAirlines']//a"):
             airline = airline_detail.xpath("./text()").get()
             if AIRLINES_TO_BE_SCRAPED and airline not in AIRLINES_TO_BE_SCRAPED:
                 continue
@@ -37,7 +42,7 @@ class SeatMapSpider(scrapy.Spider):
         airline_name_code = response.xpath("//div[@class='content-header']//h1/text()").get()
         airline_name = airline_name_code[:-4]
         airline_code = airline_name_code[-3:-1]
-        for aircraft_detail_page in response.xpath("//div[@class='aircraft_seats']/a/@href").getall()[:2]:
+        for aircraft_detail_page in response.xpath("//div[@class='aircraft_seats']/a/@href").getall():
             yield response.follow(
                 aircraft_detail_page,
                 callback=self.parse_aircraft,
@@ -57,11 +62,22 @@ class SeatMapSpider(scrapy.Spider):
             aircraft_code = ""
             layout = ""
 
+        base_path = os.path.join(BASE_PATH, f"{airline_code}/{slugify(aircraft_description)}")
+        if not os.path.exists(base_path):
+            os.makedirs(base_path)
+        json_file_path = os.path.join(base_path, "seat.json")
+
+        with open(json_file_path, "w") as f:
+            seats = response.xpath("//map/area/@title").getall()
+            seats = [json.loads(seat) for seat in seats]
+            json.dump(seats, f, indent=4)
+
         seatmap = SeatMapLoader(item=SeatMap(), response=response)
         seatmap.add_value("airline_code", airline_code)
         seatmap.add_value("airline_name", airline_name)
         seatmap.add_value("aircraft_code", aircraft_code)
         seatmap.add_value("aircraft_description", aircraft_description)
+        seatmap.add_value("seats_file", json_file_path)
         seatmap.add_value("layout", layout)
         seatmap.add_xpath("seat_map", "//img[@class='plane']/@src")
         seatmap.add_xpath("seat_map_key", "//ul[@class='legend']/li//text()")

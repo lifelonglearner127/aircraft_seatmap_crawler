@@ -25,6 +25,7 @@ class SeatmapPipeline:
                 "traveler_photos",
                 "seat_map_key",
                 "overview",
+                "seats_file",
             ]
         )
 
@@ -44,6 +45,7 @@ class SeatmapPipeline:
                 line["traveler_photos"],
                 line["seat_map_key"],
                 line["overview"],
+                line["seats_file"],
             ]
         )
         return item
