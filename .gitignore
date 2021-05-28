@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 .idea/
 seatmap/json/
+seatmap/images/
+seatmap/*.csv
+seatmap/log
